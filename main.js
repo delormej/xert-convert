@@ -9,16 +9,19 @@
 require('process');
 const xert = require('./xert.js');
 const tcx = require('./tcx-writer.js');
+const erg = require('./erg-writer.js');
 
 const commandLineArgs = require('command-line-args');
 const cli = commandLineArgs([
     { name: 'username', alias: 'u' },
     { name: 'password', alias: 'p' },
-    { name: 'workout', alias: 'w', description: 'Leaf node of the workout url, do not pass the full path.' }
+    { name: 'workout', alias: 'w', description: 'Leaf node of the workout url, do not pass the full path.' },
+    { name: 'erg', alias: 'e', type: Boolean, defaultOption: false, defaultValue: false, description: 'Specify ERG file output.' },
+    { name: 'tcx', alias: 't', type: Boolean, defaultOption: true, defaultValue: true, description: 'Specify ERG file output.' }
 ]);
 
 // Convert xert workout to tcx format.
-function xertToTcx(username, password, workoutPath) {
+function xertToTcx(username, password, workoutPath, outputTcx, outputErg) {
     xert.authXert(username, password, function(err, accessToken) {
         if (err) {
             console.log('problem with request:', err);
@@ -32,9 +35,16 @@ function xertToTcx(username, password, workoutPath) {
                     if (workoutObj.name == null) {
                         workoutObj.name = workoutPath;
                     }
-                                    
-                    var xw = tcx.writeTcx(workoutObj);
-                    console.log(xw.toString());
+
+                    if (outputTcx) {
+                        var xw = tcx.writeTcx(workoutObj);
+                        console.log(xw.toString());
+                    }
+                    
+                    if (outputErg) {
+                        var output = erg.writeErg(workoutObj);
+                        console.log(output)
+                    }
                 }
                 else {
                     console.log('Could not load workout.');
@@ -52,13 +62,15 @@ function main() {
     var username = args.username;  
     var password = args.password;
     var workoutPath = args.workout;
+    var outputTcx = args.tcx;
+    var outputErg = args.erg;
 
     if (username == null || password == null || workoutPath == null) {
         console.log(cli.getUsage());
         return;
     }  
 
-    xertToTcx(username, password, workoutPath);  
+    xertToTcx(username, password, workoutPath, outputTcx, outputErg);
 }
 
 main();

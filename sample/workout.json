@@ -1,0 +1,9 @@
+{"success":true,
+    "name":"4x8 minute Threshold @100%",
+    "description":"Standard 4x8 minute intervals at TP.\r\n\r\n\r\n\r\n\r\n\r\n",
+"workout":[
+    {"name":"Warmup","index":0,"power":146.5,"duration":300,"interval_count":1},
+    {"name":"Threshold Intervals","index":1,"power":293,"duration":480,"power_rest":146.5,"duration_rest":480,"interval_count":4},
+    {"name":"Cooldown","index":2,"power":146.5,"duration":300,"interval_count":1}
+    ]
+}
