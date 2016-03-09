@@ -1,3 +1,11 @@
+/*
+ * Copyright (c) 2016 Inside Ride Technologies, LLC. All Rights Reserved.
+ * Author: Jason De Lorme (jason@insideride.com)
+ * Requires: Node.js v4.x or greater.
+ *
+ * Simple test harness to convert xertonline.com workout to tcx.
+ */
+
 require('process');
 const xert = require('./xert.js');
 const tcx = require('./tcx-writer.js');
