@@ -8,6 +8,7 @@
 const https = require('https')
 const querystring = require('querystring');
 const HOST = 'www.xertonline.com';
+const XERT_AUTH = 'testclient:testpass';
 
 // Define module exports.
 exports.getXertWorkout = getXertWorkout;  
@@ -27,7 +28,7 @@ function authXert(username, password, callback) {
          port: 443,
          method: 'POST',
          path: '/oauth/token',
-         auth: 'testclient:testpass',
+         auth: XERT_AUTH,
          headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
             'Content-Length': postData.length
@@ -36,14 +37,11 @@ function authXert(username, password, callback) {
 
     var req = https.request(options, (res) => {
         var data = '';
-        //console.log(`STATUS: ${res.statusCode}`);
-        //console.log(`HEADERS: ${JSON.stringify(res.headers)}`);
         res.setEncoding('utf8');
         res.on('data', (chunk) => {
             data += chunk;
         });
         res.on('end', () => {
-            //console.log('No more data in response.')
             var obj = JSON.parse(data);
             callback(null, obj.access_token);
         })
@@ -60,8 +58,6 @@ function authXert(username, password, callback) {
 
 // Returns a JSON object containing the workout.
 function getXertWorkout(accessToken, workout, callback) {
-    //curl -X GET "https://www.xertonline.com/oauth/workout/janrtAEsW2B4niR9" -H "Authorization: Bearer 706b2ea00af696563f60a60b953a5d0a30055934 -k
-
     var options = {
          hostname: HOST,
          port: 443,
@@ -74,8 +70,6 @@ function getXertWorkout(accessToken, workout, callback) {
 
     https.get(options, (res) => {
         var data = '';
-        //console.log('statusCode: ', res.statusCode);
-        //console.log('headers: ', res.headers);
 
         res.on('data', (d) => {
             data += d;
@@ -86,7 +80,6 @@ function getXertWorkout(accessToken, workout, callback) {
         });
         
         res.on('end', () => {
-            //console.log('data:', data);
             var obj = JSON.parse(data);
             callback(null, obj);
         });
