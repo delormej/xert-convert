@@ -95,7 +95,7 @@ function writeTarget(xw, step) {
 // Returns an offset if this was a repeat (with nested children)
 function writeStep(xw, step, index, inExtension) {
     var name = getName(step);
-    var interval = (step.interval_count > 1);
+    var interval = (step.duration_rest != null && step.power_rest != null);
     
     xw.startElement('Step');
     
