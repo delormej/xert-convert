@@ -7,8 +7,6 @@
  * http://support.trainerroad.com/hc/en-us/articles/201944204-Creating-a-Workout-from-an-ERG-or-MRC-File
  */
 
-// Use this offset for the low target. Targets are set as low & high watt range.  
-const LOW_OFFSET_WATTS = 5; 
 const COURSE_HEADER = '[COURSE HEADER]\r\n' +
             'VERSION=2\r\n' +
             'UNITS=ENGLISH\r\n' +
@@ -41,9 +39,7 @@ function formatCourseLine(time, watts) {
 function writeStep(step) {
     var output = '';
     
-    // Number(step.duration).toFixed(2)
-    
-    for(i = 0; i < step.interval_count; i++) {
+    for(var i = 0; i < step.interval_count; i++) {
         // Write the active entry.
         output += formatCourseLine(elapsedMins, step.power);
         
@@ -51,7 +47,7 @@ function writeStep(step) {
         elapsedMins += (step.duration / 60);
         output += formatCourseLine(elapsedMins, step.power);
                 
-        if (step.interval_count > 1) {
+        if (step.duration_rest != null && step.power_rest != null) {
             // We're in an interval, so write the rest step.
             output += formatCourseLine(elapsedMins, step.power_rest);
             
