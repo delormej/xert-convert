@@ -80,7 +80,7 @@ function getXertWorkout(accessToken, workout, callback) {
         });
         
         res.on('end', () => {
-            console.log(data);
+            // console.log(data);
             var obj = JSON.parse(data);
             callback(null, obj);
         });

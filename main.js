@@ -15,39 +15,40 @@ const commandLineArgs = require('command-line-args');
 const cli = commandLineArgs([
     { name: 'username', alias: 'u' },
     { name: 'password', alias: 'p' },
-    { name: 'workout', alias: 'w', description: 'Leaf node of the workout url, do not pass the full path.' },
-    { name: 'erg', alias: 'e', type: Boolean, defaultOption: false, defaultValue: false, description: 'Specify ERG file output.' },
-    { name: 'tcx', alias: 't', type: Boolean, defaultOption: true, defaultValue: true, description: 'Specify ERG file output.' }
+    { name: 'output', alias: 'o', type: String, defaultValue: 'erg', description: 'Specify erg or tcx file output.' },
+    { name: 'workout', alias: 'w', defaultOption: true, description: 'Leaf node of the workout url, do not pass the full path.' },
 ]);
 
-// Convert xert workout to tcx format.
-function xertToTcx(username, password, workoutPath, outputTcx, outputErg) {
+// Convert xert workout to specified format.
+function xertConvert(username, password, workoutPath, outputFormat) {
     xert.authXert(username, password, function(err, accessToken) {
         if (err) {
-            console.log('problem with request:', err);
+            throw new Error('problem with request:', err);
         }
         else {
             xert.getXertWorkout(accessToken, workoutPath, function(err, workoutObj) {
                 if (workoutObj.success == true) {
-                    //console.log(workoutObj);
                     
                     // Use path as the name if missing.
                     if (workoutObj.name == null) {
                         workoutObj.name = workoutPath;
                     }
 
-                    if (outputTcx) {
+                    if (outputFormat === 'tcx') {
                         var xw = tcx.writeTcx(workoutObj);
                         console.log(xw.toString());
                     }
-                    
-                    if (outputErg) {
+                    else if (outputFormat === 'erg') {
                         var output = erg.writeErg(workoutObj);
                         console.log(output)
                     }
+                    else {
+                        throw new Error('Invalid output format specified.');
+                    } 
+                    
                 }
                 else {
-                    console.log('Could not load workout.');
+                    throw new Error('Could not load workout.');
                 }
             });
         }
@@ -62,15 +63,14 @@ function main() {
     var username = args.username;  
     var password = args.password;
     var workoutPath = args.workout;
-    var outputTcx = args.tcx;
-    var outputErg = args.erg;
+    var ouputFormat = args.output;
 
     if (username == null || password == null || workoutPath == null) {
         console.log(cli.getUsage());
         return;
     }  
 
-    xertToTcx(username, password, workoutPath, outputTcx, outputErg);
+    xertConvert(username, password, workoutPath, ouputFormat);
 }
 
 main();
