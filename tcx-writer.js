@@ -141,12 +141,10 @@ function writeStep(xw, step, index, inExtension) {
         writeTarget(xw, inExtension ? step : null, true);
         xw.endElement(); // Child or Step
         
-        if (!inExtension) {
-            // Advance to accomodate for outer step index.
-            index++;          
-        }
+        // Advance to accomodate for outer step index.
+        index++;          
     }        
-    else {
+    else { // not an interval target.
         writeStepDetails(xw, 
             index++,
             name,
