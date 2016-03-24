@@ -32,17 +32,15 @@ function getName(step) {
 }
 
 // Helper function to get the right power value and round it.
-function getPower(step) {
+function getPower(step, isResting) {
     var power = 0;
                         
-    if (step.power != null) {
-        power = Math.round(step.power);
-    } else if (step.power_rest != null) {
+    if (isResting) {
         power = Math.round(step.power_rest);
-    } else {
-        // Worst case fall through with non-negative.
-        power = LOW_OFFSET_WATTS;
-    }    
+    } 
+    else {
+        power = Math.round(step.power);
+    }
     
     return power;
 }
@@ -65,7 +63,7 @@ function writeStepDetails(xw,
 }
 
 // Writes the target element.
-function writeTarget(xw, step) {
+function writeTarget(xw, step, isResting) {
     var power = 0;                         
 
     xw.startElement('Target');
@@ -73,7 +71,7 @@ function writeTarget(xw, step) {
         writeType(xw, 'None_t');
     } 
     else {
-        power = getPower(step);
+        power = getPower(step, isResting);
 
         writeType(xw, 'Power_t');
         xw.startElement('PowerZone');
@@ -123,7 +121,7 @@ function writeStep(xw, step, index, inExtension) {
             name,
             step.duration,  
             'Active');
-        writeTarget(xw, inExtension ? step : null);
+        writeTarget(xw, inExtension ? step : null, false);
         xw.endElement(); // Child or Step (powerZone)
         
         // Recovery step.
@@ -140,7 +138,7 @@ function writeStep(xw, step, index, inExtension) {
             name,
             step.duration_rest,  
             'Resting');        
-        writeTarget(xw, inExtension ? step : null);
+        writeTarget(xw, inExtension ? step : null, true);
         xw.endElement(); // Child or Step
         
         if (!inExtension) {
@@ -154,7 +152,7 @@ function writeStep(xw, step, index, inExtension) {
             name,
             step.duration,  
             'Active');  
-        writeTarget(xw, inExtension ? step : null);
+        writeTarget(xw, inExtension ? step : null, false);
         
         if (inExtension) {
             xw.endElement(); // Step

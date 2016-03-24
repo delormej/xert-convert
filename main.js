@@ -29,6 +29,9 @@ function xertConvert(username, password, workoutPath, outputFormat) {
             xert.getXertWorkout(accessToken, workoutPath, function(err, workoutObj) {
                 if (workoutObj.success == true) {
                     
+                    // DEBUG OUTPUT:
+                    //console.log(workoutObj);
+                    
                     // Use path as the name if missing.
                     if (workoutObj.name == null) {
                         workoutObj.name = workoutPath;
